@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
     TbPrinter, TbLayersLinked, TbBookmarkPlus, TbCheck, TbCircleLetterXFilled,
     TbCirclePlus, TbHourglass, TbPencil, TbTrash, TbEye, TbEyeClosed, TbArrowAutofitWidth,
-    TbDeviceTabletSearch, TbZoom
+    TbDeviceTabletSearch, TbZoom,
+    TbCircleCheckFilled
 } from 'react-icons/tb';
 import { ButtonSky, ButtonSkyBorder, ButtonRedBorder, ButtonGreenBorder, ButtonBlackBorder } from '@/components/global/Button';
 import { AlertNotification, AlertQuestion } from '@/components/global/Alert';
@@ -47,6 +48,10 @@ interface Cross {
     tahun: string;
     status: string;
     indikator: Indikator[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 
 interface Review {
@@ -234,7 +239,7 @@ export const PohonOpd: React.FC<pohon> = ({ tema, deleteTrigger, fetchTrigger, s
                                     }
                                 </div>
                                 {/* BODY */}
-                                <div className="flex justify-center my-3">
+                                <div className="flex flex-col justify-center my-3">
                                     {Edited ?
                                         <TablePohon
                                             item={Edited}
@@ -654,6 +659,7 @@ export const PohonOpd: React.FC<pohon> = ({ tema, deleteTrigger, fetchTrigger, s
 export const TablePohon = (props: any) => {
     const id = props.item.id;
     const tema = props.item.nama_pohon;
+    const tagging = props.item.tagging;
     const keterangan = props.item.keterangan;
     const keterangan_crosscutting = props.item.keterangan_crosscutting;
     const opd = props.item.perangkat_daerah?.nama_opd;
@@ -787,6 +793,18 @@ export const TablePohon = (props: any) => {
 
     return (
         <div className='flex flex-col w-full'>
+            {/* TAGGING */}
+            {tagging &&
+                tagging.map((tg: Tagging, tag_index: number) => (
+                    <div key={tag_index} className="flex flex-col gap-1 w-full px-3 py-1 border border-yellow-400 rounded-lg bg-white mb-2">
+                        <div className='flex items-center gap-1'>
+                            <h1 className='text-emerald-500'><TbCircleCheckFilled /></h1>
+                            <h1 className='font-semibold'>{tg.nama_tagging || "-"}</h1>
+                        </div>
+                        <h1 className="p-1 text-slate-600 text-start">{tg.keterangan_tagging || ""}</h1>
+                    </div>
+                ))
+            }
             <table className='w-full'>
                 <tbody>
                     {(status === 'crosscutting_disetujui' || status === 'crosscutting_disetujui_existing') &&

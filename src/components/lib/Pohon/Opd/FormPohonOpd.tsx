@@ -5,11 +5,10 @@ import { ButtonSky, ButtonRed, ButtonSkyBorder, ButtonRedBorder } from '@/compon
 import { Controller, SubmitHandler, useForm, useFieldArray } from "react-hook-form";
 import { getOpdTahun } from '../../Cookie';
 import { AlertNotification } from '@/components/global/Alert';
-import Select from 'react-select';
 import { PohonOpd } from './PohonOpd';
 import { getToken, getUser } from '../../Cookie';
 import { LoadingButtonClip, LoadingSync } from '@/components/global/Loading';
-import { TbCirclePlus, TbCircleX, TbDeviceFloppy } from 'react-icons/tb';
+import { TbCirclePlus, TbCircleX, TbDeviceFloppy, TbCheck } from 'react-icons/tb';
 
 interface OptionTypeString {
     value: string;
@@ -30,6 +29,11 @@ interface FormValue {
     pelaksana: OptionTypeString[];
     pohon?: OptionType;
     indikator: indikator[];
+    tagging: Tagging[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 interface indikator {
     nama_indikator: string;
@@ -61,7 +65,9 @@ export const FormPohonOpd: React.FC<{
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const [DataAdd, setDataAdd] = useState<any>(null);
     const [IsAdded, setIsAdded] = useState<boolean>(false);
-    const [Deleted, setDeleted] = useState<boolean>(false);
+    const [UnggulanBupati, setUnggulanBupati] = useState<boolean>(false);
+    const [HariKerja, setHariKerja] = useState<boolean>(false);
+    const [UnggulanPusat, setUnggulanPusat] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [user, setUser] = useState<any>(null);
     const token = getToken();
@@ -95,6 +101,20 @@ export const FormPohonOpd: React.FC<{
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const taggingData = [
+            ...(UnggulanBupati ? [{
+                nama_tagging: "Program Unggulan Bupati",
+                keterangan_tagging: data.tagging?.['0']?.keterangan_tagging || '',
+            }] : []),
+            ...(HariKerja ? [{
+                nama_tagging: "100 Hari Kerja Bupati",
+                keterangan_tagging: data.tagging?.['1']?.keterangan_tagging || '',
+            }] : []),
+            ...(UnggulanPusat ? [{
+                nama_tagging: "Program Unggulan Pemerintah Pusat",
+                keterangan_tagging: data.tagging?.['2']?.keterangan_tagging || '',
+            }] : []),
+        ];
         const formData = {
             //key : value
             nama_pohon: data.nama_pohon,
@@ -118,6 +138,7 @@ export const FormPohonOpd: React.FC<{
                     })),
                 })),
             }),
+            tagging: taggingData,
         };
         // console.log(formData);
         try {
@@ -225,6 +246,122 @@ export const FormPohonOpd: React.FC<{
                                         )}
                                     />
                                 </div>
+
+                                {/* TAGGING */}
+                                <label className="uppercase text-xs font-bold text-gray-700 my-2">
+                                    Tagging :
+                                </label>
+                                <div className="grid grid-flow-col gap-2 items-center border border-sky-700 rounded-lg p-3">
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanBupati ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanBupati((prev) => !prev)} className={`cursor-pointer ${UnggulanBupati && 'text-emerald-500'}`}>Program Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {HariKerja ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setHariKerja((prev) => !prev)} className={`cursor-pointer ${HariKerja && 'text-emerald-500'}`}>100 Hari Kerja Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanPusat ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanPusat((prev) => !prev)} className={`cursor-pointer ${UnggulanPusat && 'text-emerald-500'}`}>Program Pusat</p>
+                                    </div>
+                                </div>
+                                {UnggulanBupati &&
+                                    <Controller
+                                        name={`tagging.0.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {HariKerja &&
+                                    <Controller
+                                        name={`tagging.1.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan 100 Hari Kerja Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan 100 Hari Kerja Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {UnggulanPusat &&
+                                    <Controller
+                                        name={`tagging.2.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Pemerintah Pusat :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Pemerintah Pusat"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+
                                 <label className="uppercase text-base font-bold text-sky-700 my-2">
                                     {level == 4 ?
                                         <h1>Indikator Tactical :</h1>
@@ -393,9 +530,9 @@ export const FormEditPohon: React.FC<{
     const [Tahun, setTahun] = useState<any>(null);
     const [Pelaksana, setPelaksana] = useState<OptionTypeString[]>([]);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
-    const [IsEdited, setIsEdited] = useState<boolean>(false);
-    const [DataEdit, setDataEdit] = useState<any>(null);
-    const [Deleted, setDeleted] = useState<boolean>(false);
+    const [UnggulanBupati, setUnggulanBupati] = useState<boolean>(false);
+    const [HariKerja, setHariKerja] = useState<boolean>(false);
+    const [UnggulanPusat, setUnggulanPusat] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [ProsesDetail, setProsesDetail] = useState<boolean>(false);
     const [user, setUser] = useState<any>(null);
@@ -454,6 +591,25 @@ export const FormEditPohon: React.FC<{
                 if (data.jenis_pohon) {
                     setJenisPohon(data.jenis_pohon);
                 }
+                const { tagging } = data;
+
+                // 1. Cari setiap jenis tagging dan siapkan data fieldnya
+                const unggulanBupatiTag = tagging.find((t: Tagging) => t.nama_tagging === "Program Unggulan Bupati");
+                const hariKerjaTag = tagging.find((t: Tagging) => t.nama_tagging === "100 Hari Kerja Bupati");
+                const unggulanPusatTag = tagging.find((t: Tagging) => t.nama_tagging === "Program Unggulan Pemerintah Pusat");
+
+                // 2. Siapkan objek default values untuk FIELD-FIELD INDIVIDUAL
+                const taggingFieldsDefaultValue = {
+                    // Kunci di sini harus sesuai dengan 'name' di Controller Anda
+                    'tagging.0.keterangan_tagging': unggulanBupatiTag?.keterangan_tagging || '',
+                    'tagging.1.keterangan_tagging': hariKerjaTag?.keterangan_tagging || '',
+                    'tagging.2.keterangan_tagging': unggulanPusatTag?.keterangan_tagging || '',
+                };
+
+                // 3. Set State Boolean (tetap diperlukan agar input muncul)
+                setUnggulanBupati(!!unggulanBupatiTag);
+                setHariKerja(!!hariKerjaTag);
+                setUnggulanPusat(!!unggulanPusatTag);
                 reset({
                     nama_pohon: data.nama_pohon || '',
                     keterangan: data.keterangan || '',
@@ -469,6 +625,7 @@ export const FormEditPohon: React.FC<{
                             satuan: t.satuan,
                         })),
                     })),
+                    ...taggingFieldsDefaultValue,
                 });
                 setPelaksana(
                     data.pelaksana?.map((item: any) => ({
@@ -494,6 +651,20 @@ export const FormEditPohon: React.FC<{
         const pelaksanaIds = Pelaksana?.map((pelaksana) => ({
             pegawai_id: pelaksana.value, // Ubah `value` menjadi `pegawai_id`
         })) || [];
+        const taggingData = [
+            ...(UnggulanBupati ? [{
+                nama_tagging: "Program Unggulan Bupati",
+                keterangan_tagging: data.tagging?.['0']?.keterangan_tagging || '',
+            }] : []),
+            ...(HariKerja ? [{
+                nama_tagging: "100 Hari Kerja Bupati",
+                keterangan_tagging: data.tagging?.['1']?.keterangan_tagging || '',
+            }] : []),
+            ...(UnggulanPusat ? [{
+                nama_tagging: "Program Unggulan Pemerintah Pusat",
+                keterangan_tagging: data.tagging?.['2']?.keterangan_tagging || '',
+            }] : []),
+        ];
         const formData = {
             //key : value
             nama_pohon: data.nama_pohon,
@@ -513,6 +684,7 @@ export const FormEditPohon: React.FC<{
                     })),
                 })),
             }),
+            tagging: taggingData,
         };
         // console.log(formData);
         try {
@@ -533,6 +705,7 @@ export const FormEditPohon: React.FC<{
                 const data = result.data;
                 if (berhasil) {
                     EditBerhasil(data);
+                    // console.log(data);
                 }
             } else {
                 AlertNotification("Gagal", `${result.data}`, "error", 2000);
@@ -555,206 +728,320 @@ export const FormEditPohon: React.FC<{
 
     return (
         <React.Fragment>
-                <div className="tf-nc tf flex flex-col w-[600px] rounded-lg shadow-lg shadow-slate-500 form-edit-pohon">
-                    <div className="flex pt-3 justify-center font-bold text-lg uppercase border my-3 py-3 border-black rounded-lg">
-                        {level == 4 ?
-                            <h1>Edit Strategic </h1>
+            <div className="tf-nc tf flex flex-col w-[600px] rounded-lg shadow-lg shadow-slate-500 form-edit-pohon">
+                <div className="flex pt-3 justify-center font-bold text-lg uppercase border my-3 py-3 border-black rounded-lg">
+                    {level == 4 ?
+                        <h1>Edit Strategic </h1>
+                        :
+                        level == 5 ?
+                            <h1>Edit Tactical </h1>
                             :
-                            level == 5 ?
-                                <h1>Edit Tactical </h1>
+                            level == 6 ?
+                                <h1>Edit Operational </h1>
                                 :
-                                level == 6 ?
-                                    <h1>Edit Operational </h1>
+                                <h1>Edit Operational N</h1>
+                    }
+                </div>
+                <div className="flex justify-center my-3 w-full">
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className='w-full'
+                    >
+                        <div className="flex flex-col py-3">
+                            <label
+                                className="uppercase text-xs font-bold text-gray-700 my-2"
+                                htmlFor="nama_pohon"
+                            >
+                                {level == 1 &&
+                                    "Sub Tematik"
+                                }
+                                {level == 2 &&
+                                    "Sub Sub Tematik"
+                                }
+                                {level == 3 &&
+                                    "Super Sub Tematik"
+                                }
+                                {level == 4 &&
+                                    "Strategic"
+                                }
+                                {level == 5 &&
+                                    "Tactical"
+                                }
+                                {level == 6 &&
+                                    "Operational"
+                                }
+                            </label>
+                            <Controller
+                                name="nama_pohon"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        {...field}
+                                        className="border px-4 py-2 rounded-lg"
+                                        id="nama_pohon"
+                                        type="text"
+                                        maxLength={255}
+                                        placeholder="masukkan Pohon"
+                                        value={field.value || NamaPohon}
+                                        onChange={(e) => {
+                                            field.onChange(e);
+                                            setNamaPohon(e.target.value);
+                                        }}
+                                    />
+                                )}
+                            />
+                        </div>
+                        {/* TAGGING */}
+                        <label className="uppercase text-xs font-bold text-gray-700 my-2">
+                            Tagging :
+                        </label>
+                        <div className="grid grid-flow-col gap-2 items-center border border-sky-700 rounded-lg p-3">
+                            <div className="flex flex-col items-center">
+                                {UnggulanBupati ?
+                                    <button
+                                        type="button"
+                                        onClick={() => setUnggulanBupati(false)}
+                                        className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                    >
+                                        <TbCheck />
+                                    </button>
                                     :
-                                    <h1>Edit Operational N</h1>
-                        }
-                    </div>
-                    <div className="flex justify-center my-3 w-full">
-                        <form
-                            onSubmit={handleSubmit(onSubmit)}
-                            className='w-full'
-                        >
-                            <div className="flex flex-col py-3">
-                                <label
-                                    className="uppercase text-xs font-bold text-gray-700 my-2"
-                                    htmlFor="nama_pohon"
-                                >
-                                    {level == 1 &&
-                                        "Sub Tematik"
-                                    }
-                                    {level == 2 &&
-                                        "Sub Sub Tematik"
-                                    }
-                                    {level == 3 &&
-                                        "Super Sub Tematik"
-                                    }
-                                    {level == 4 &&
-                                        "Strategic"
-                                    }
-                                    {level == 5 &&
-                                        "Tactical"
-                                    }
-                                    {level == 6 &&
-                                        "Operational"
-                                    }
-                                </label>
-                                <Controller
-                                    name="nama_pohon"
-                                    control={control}
-                                    render={({ field }) => (
+                                    <button
+                                        type="button"
+                                        onClick={() => setUnggulanBupati(true)}
+                                        className="w-[20px] h-[20px] border border-black rounded-full"
+                                    ></button>
+                                }
+                                <p onClick={() => setUnggulanBupati((prev) => !prev)} className={`cursor-pointer ${UnggulanBupati && 'text-emerald-500'}`}>Program Bupati</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                {HariKerja ?
+                                    <button
+                                        type="button"
+                                        onClick={() => setHariKerja(false)}
+                                        className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                    >
+                                        <TbCheck />
+                                    </button>
+                                    :
+                                    <button
+                                        type="button"
+                                        onClick={() => setHariKerja(true)}
+                                        className="w-[20px] h-[20px] border border-black rounded-full"
+                                    ></button>
+                                }
+                                <p onClick={() => setHariKerja((prev) => !prev)} className={`cursor-pointer ${HariKerja && 'text-emerald-500'}`}>100 Hari Kerja Bupati</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                {UnggulanPusat ?
+                                    <button
+                                        type="button"
+                                        onClick={() => setUnggulanPusat(false)}
+                                        className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                    >
+                                        <TbCheck />
+                                    </button>
+                                    :
+                                    <button
+                                        type="button"
+                                        onClick={() => setUnggulanPusat(true)}
+                                        className="w-[20px] h-[20px] border border-black rounded-full"
+                                    ></button>
+                                }
+                                <p onClick={() => setUnggulanPusat((prev) => !prev)} className={`cursor-pointer ${UnggulanPusat && 'text-emerald-500'}`}>Program Pusat</p>
+                            </div>
+                        </div>
+                        {UnggulanBupati &&
+                            <Controller
+                                name={`tagging.0.keterangan_tagging`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex flex-col py-3">
+                                        <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                            Keterangan Program Unggulan Bupati :
+                                        </label>
                                         <input
                                             {...field}
                                             className="border px-4 py-2 rounded-lg"
-                                            id="nama_pohon"
-                                            type="text"
-                                            maxLength={255}
-                                            placeholder="masukkan Pohon"
-                                            value={field.value || NamaPohon}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setNamaPohon(e.target.value);
-                                            }}
+                                            placeholder="Masukkan Keterangan Program Unggulan Bupati"
                                         />
-                                    )}
-                                />
-                            </div>
-                            <label className="uppercase text-base font-bold text-sky-700 my-2">
-                                {level == 4 ?
-                                    <h1>Indikator Strategic :</h1>
-                                    :
-                                    level == 5 ?
-                                        <h1>Indikator Tactical :</h1>
-                                        :
-                                        level == 6 ?
-                                            <h1>Indikator Operational :</h1>
-                                            :
-                                            <h1>Indikator Operational N :</h1>
-                                }
-                            </label>
-                            {fields.map((field, index) => (
-                                <div key={index} className="flex flex-col my-2 py-2 px-5 border border-sky-700 rounded-lg">
-                                    <Controller
-                                        name={`indikator.${index}.nama_indikator`}
-                                        control={control}
-                                        defaultValue={field.nama_indikator}
-                                        render={({ field }) => (
-                                            <div className="flex flex-col py-3">
-                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
-                                                    Nama Indikator {index + 1} :
-                                                </label>
-                                                <input
-                                                    {...field}
-                                                    maxLength={255}
-                                                    className="border px-4 py-2 rounded-lg"
-                                                    placeholder={`Masukkan nama indikator ${index + 1}`}
-                                                />
-                                            </div>
-                                        )}
-                                    />
-                                    {field.targets.map((_, subindex) => (
-                                        <div key={subindex}>
-                                            <Controller
-                                                name={`indikator.${index}.targets.${subindex}.target`}
-                                                control={control}
-                                                defaultValue={_.target}
-                                                render={({ field }) => (
-                                                    <div className="flex flex-col py-3">
-                                                        <label className="uppercase text-xs font-bold text-gray-700 mb-2">
-                                                            Target :
-                                                        </label>
-                                                        <input
-                                                            {...field}
-                                                            type="text"
-                                                            className="border px-4 py-2 rounded-lg"
-                                                            placeholder="Masukkan target"
-                                                        />
-                                                    </div>
-                                                )}
-                                            />
-                                            <Controller
-                                                name={`indikator.${index}.targets.${subindex}.satuan`}
-                                                control={control}
-                                                defaultValue={_.satuan}
-                                                render={({ field }) => (
-                                                    <div className="flex flex-col py-3">
-                                                        <label className="uppercase text-xs font-bold text-gray-700 mb-2">
-                                                            Satuan :
-                                                        </label>
-                                                        <input
-                                                            {...field}
-                                                            className="border px-4 py-2 rounded-lg"
-                                                            placeholder="Masukkan satuan"
-                                                        />
-                                                    </div>
-                                                )}
-                                            />
-                                        </div>
-                                    ))}
-                                    {index >= 0 && (
-                                        <ButtonRedBorder
-                                            type="button"
-                                            onClick={() => remove(index)}
-                                            className="w-[200px] my-3"
-                                        >
-                                            Hapus
-                                        </ButtonRedBorder>
-                                    )}
-                                </div>
-                            ))}
-                            <ButtonSkyBorder
-                                className="flex items-center gap-1 mb-3 mt-2 w-full"
-                                type="button"
-                                onClick={() => append({ nama_indikator: "", targets: [{ target: "", satuan: "" }] })}
-                            >
-                                <TbCirclePlus />
-                                Tambah Indikator
-                            </ButtonSkyBorder>
-                            <div className="flex flex-col pb-3 pt-1 border-t-2">
-                                <label
-                                    className="uppercase text-xs font-bold text-gray-700 my-2"
-                                    htmlFor="keterangan"
-                                >
-                                    Keterangan:
-                                </label>
-                                <Controller
-                                    name="keterangan"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <textarea
+                                    </div>
+                                )}
+                            />
+                        }
+                        {HariKerja &&
+                            <Controller
+                                name={`tagging.1.keterangan_tagging`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex flex-col py-3">
+                                        <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                            Keterangan 100 Hari Kerja Bupati :
+                                        </label>
+                                        <input
                                             {...field}
                                             className="border px-4 py-2 rounded-lg"
-                                            id="keterangan"
-                                            placeholder="masukkan keterangan"
-                                            value={field.value || Keterangan}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setKeterangan(e.target.value);
-                                            }}
+                                            placeholder="Masukkan Keterangan 100 Hari Kerja Bupati"
                                         />
+                                    </div>
+                                )}
+                            />
+                        }
+                        {UnggulanPusat &&
+                            <Controller
+                                name={`tagging.2.keterangan_tagging`}
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex flex-col py-3">
+                                        <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                            Keterangan Program Unggulan Pemerintah Pusat :
+                                        </label>
+                                        <input
+                                            {...field}
+                                            className="border px-4 py-2 rounded-lg"
+                                            placeholder="Masukkan Keterangan Program Unggulan Pemerintah Pusat"
+                                        />
+                                    </div>
+                                )}
+                            />
+                        }
+                        <label className="uppercase text-base font-bold text-sky-700 my-2">
+                            {level == 4 ?
+                                <h1>Indikator Strategic :</h1>
+                                :
+                                level == 5 ?
+                                    <h1>Indikator Tactical :</h1>
+                                    :
+                                    level == 6 ?
+                                        <h1>Indikator Operational :</h1>
+                                        :
+                                        <h1>Indikator Operational N :</h1>
+                            }
+                        </label>
+                        {fields.map((field, index) => (
+                            <div key={index} className="flex flex-col my-2 py-2 px-5 border border-sky-700 rounded-lg">
+                                <Controller
+                                    name={`indikator.${index}.nama_indikator`}
+                                    control={control}
+                                    defaultValue={field.nama_indikator}
+                                    render={({ field }) => (
+                                        <div className="flex flex-col py-3">
+                                            <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                Nama Indikator {index + 1} :
+                                            </label>
+                                            <input
+                                                {...field}
+                                                maxLength={255}
+                                                className="border px-4 py-2 rounded-lg"
+                                                placeholder={`Masukkan nama indikator ${index + 1}`}
+                                            />
+                                        </div>
                                     )}
                                 />
+                                {field.targets.map((_, subindex) => (
+                                    <div key={subindex}>
+                                        <Controller
+                                            name={`indikator.${index}.targets.${subindex}.target`}
+                                            control={control}
+                                            defaultValue={_.target}
+                                            render={({ field }) => (
+                                                <div className="flex flex-col py-3">
+                                                    <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                        Target :
+                                                    </label>
+                                                    <input
+                                                        {...field}
+                                                        type="text"
+                                                        className="border px-4 py-2 rounded-lg"
+                                                        placeholder="Masukkan target"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                        <Controller
+                                            name={`indikator.${index}.targets.${subindex}.satuan`}
+                                            control={control}
+                                            defaultValue={_.satuan}
+                                            render={({ field }) => (
+                                                <div className="flex flex-col py-3">
+                                                    <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                        Satuan :
+                                                    </label>
+                                                    <input
+                                                        {...field}
+                                                        className="border px-4 py-2 rounded-lg"
+                                                        placeholder="Masukkan satuan"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
+                                    </div>
+                                ))}
+                                {index >= 0 && (
+                                    <ButtonRedBorder
+                                        type="button"
+                                        onClick={() => remove(index)}
+                                        className="w-[200px] my-3"
+                                    >
+                                        Hapus
+                                    </ButtonRedBorder>
+                                )}
                             </div>
-                            <ButtonSky type="submit" className="w-full my-3" disabled={Proses}>
-                                {Proses ?
-                                    <span className="flex items-center gap-1 ">
-                                        <LoadingButtonClip />
-                                        Menyimpan...
-                                    </span>
-                                    :
-                                    <span className="flex items-center gap-1 ">
-                                        <TbDeviceFloppy />
-                                        Menyimpan...
-                                    </span>
-                                }
-                            </ButtonSky>
-                            <ButtonRed className="flex items-center gap-1 w-full my-3" onClick={onCancel}>
-                                <TbCircleX />
-                                Batal
-                            </ButtonRed>
-                        </form>
-                    </div>
+                        ))}
+                        <ButtonSkyBorder
+                            className="flex items-center gap-1 mb-3 mt-2 w-full"
+                            type="button"
+                            onClick={() => append({ nama_indikator: "", targets: [{ target: "", satuan: "" }] })}
+                        >
+                            <TbCirclePlus />
+                            Tambah Indikator
+                        </ButtonSkyBorder>
+                        <div className="flex flex-col pb-3 pt-1 border-t-2">
+                            <label
+                                className="uppercase text-xs font-bold text-gray-700 my-2"
+                                htmlFor="keterangan"
+                            >
+                                Keterangan:
+                            </label>
+                            <Controller
+                                name="keterangan"
+                                control={control}
+                                render={({ field }) => (
+                                    <textarea
+                                        {...field}
+                                        className="border px-4 py-2 rounded-lg"
+                                        id="keterangan"
+                                        placeholder="masukkan keterangan"
+                                        value={field.value || Keterangan}
+                                        onChange={(e) => {
+                                            field.onChange(e);
+                                            setKeterangan(e.target.value);
+                                        }}
+                                    />
+                                )}
+                            />
+                        </div>
+                        <ButtonSky type="submit" className="w-full my-3" disabled={Proses}>
+                            {Proses ?
+                                <span className="flex items-center gap-1 ">
+                                    <LoadingButtonClip />
+                                    Menyimpan...
+                                </span>
+                                :
+                                <span className="flex items-center gap-1 ">
+                                    <TbDeviceFloppy />
+                                    Simpan
+                                </span>
+                            }
+                        </ButtonSky>
+                        <ButtonRed className="flex items-center gap-1 w-full my-3" onClick={onCancel}>
+                            <TbCircleX />
+                            Batal
+                        </ButtonRed>
+                    </form>
                 </div>
-            
+            </div>
+
         </React.Fragment>
     );
 };
