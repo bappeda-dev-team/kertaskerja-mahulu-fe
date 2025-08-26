@@ -37,6 +37,11 @@ interface FormValue {
     pelaksana: OptionTypeString[];
     pohon?: OptionType;
     indikator: indikator[];
+    tagging: Tagging[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string
 }
 interface indikator {
     nama_indikator: string;
@@ -71,6 +76,9 @@ export const FormPohonPemda: React.FC<{
     const [Tahun, setTahun] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const [DataAdd, setDataAdd] = useState<any>(null);
+    const [UnggulanBupati, setUnggulanBupati] = useState<boolean>(false);
+    const [HariKerja, setHariKerja] = useState<boolean>(false);
+    const [UnggulanPusat, setUnggulanPusat] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [IsAdded, setIsAdded] = useState<boolean>(false);
     const [Deleted, setDeleted] = useState<boolean>(false);
@@ -99,12 +107,6 @@ export const FormPohonPemda: React.FC<{
         control,
         name: "indikator",
     });
-
-    // useEffect(() => {
-    //     if (fields.length === 0) {
-    //         append({ nama_indikator: "", targets: [{ target: "", satuan: "" }] });
-    //     }
-    // }, [fields, append]);
 
     const fetchOpd = async () => {
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -161,6 +163,20 @@ export const FormPohonPemda: React.FC<{
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const taggingData = [
+            ...(UnggulanBupati ? [{
+                nama_tagging: "Program Unggulan Bupati",
+                keterangan_tagging: data.tagging?.['0']?.keterangan_tagging || '',
+            }] : []),
+            ...(HariKerja ? [{
+                nama_tagging: "100 Hari Kerja Bupati",
+                keterangan_tagging: data.tagging?.['1']?.keterangan_tagging || '',
+            }] : []),
+            ...(UnggulanPusat ? [{
+                nama_tagging: "Program Unggulan Pemerintah Pusat",
+                keterangan_tagging: data.tagging?.['2']?.keterangan_tagging || '',
+            }] : []),
+        ];
         const formData = {
             //key : value
             ...(level === 0 && {
@@ -196,7 +212,8 @@ export const FormPohonPemda: React.FC<{
                         satuan: t.satuan,
                     })),
                 })),
-            })
+            }),
+            tagging: taggingData,
         };
         // console.log(formData);
         try {
@@ -264,58 +281,6 @@ export const FormPohonPemda: React.FC<{
                                 onSubmit={handleSubmit(onSubmit)}
                                 className='w-full'
                             >
-                                {/* {(level === 0 || level === 1) &&
-                                    <div className="flex flex-col py-3">
-                                        <label
-                                            className="uppercase text-xs font-bold text-gray-700 my-2"
-                                            htmlFor="penyebab_permasalahan"
-                                        >
-                                            Penyebab Permasalahan (CSF)
-                                        </label>
-                                        <Controller
-                                            name="penyebab_permasalahan"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <input
-                                                    {...field}
-                                                    className="border px-4 py-2 rounded-lg"
-                                                    id="penyebab_permasalahan"
-                                                    type="text"
-                                                    placeholder="masukkan faktor yang berpengaruh terhadap capaian outcome"
-                                                    onChange={(e) => {
-                                                        field.onChange(e);
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </div>
-                                }
-                                {level === 0 &&
-                                    <div className="flex flex-col py-3">
-                                        <label
-                                            className="uppercase text-xs font-bold text-gray-700 my-2"
-                                            htmlFor="data_terukur"
-                                        >
-                                            Data Terukur Terkait (CSF)
-                                        </label>
-                                        <Controller
-                                            name="data_terukur"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <input
-                                                    {...field}
-                                                    className="border px-4 py-2 rounded-lg"
-                                                    id="data_terukur"
-                                                    type="text"
-                                                    placeholder="masukkan Data Terukur Terkait CSF"
-                                                    onChange={(e) => {
-                                                        field.onChange(e);
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </div>
-                                } */}
                                 <div className="flex flex-col py-3">
                                     <label
                                         className="uppercase text-xs font-bold text-gray-700 my-2"

@@ -8,7 +8,7 @@ import {
   TbCircleArrowLeftFilled, TbBadges, TbBuilding, TbChevronRight,
   TbBuildingEstate, TbFileChart, TbFileDots, TbFileCode, TbFileCode2, TbUsers, TbArrowUpFromArc,
   TbUser, TbHexagonLetterR, TbBinaryTree2, TbTarget, TbMapPin, TbChartBar, TbCalendarShare,
-  TbMessageReport, TbCalendar, TbHexagonLetterV, TbHexagonLetterM, TbClipboardText, TbZoomExclamation,
+  TbCircleCheck, TbCalendar, TbHexagonLetterV, TbHexagonLetterM, TbClipboardText, TbZoomExclamation,
   TbFileAnalytics, TbListDetails, TbCalendarTime, TbAlertTriangle,
   TbAlertCircle, TbDatabasePlus, TbCalendarPlus, TbDeviceImacDollar, TbFocus2, TbHexagonLetterC, TbHexagonLetterO, TbHexagonLetterI,
   TbBuildingCottage,
@@ -218,7 +218,8 @@ export const Sidebar = ({ isZoomed, isOpen, toggleSidebar }: SidebarProps) => {
       url === "/rencanakinerja-kak" ||
       url === `/laporanrincianbelanja` ||
       url === `/laporancascadingpemda` ||
-      url === "/laporancascadingopd"
+      url === "/laporancascadingopd" ||
+      url === "/laporantaggingpohon"
     ) {
       setDataMaster(false);
       setDataMasterOpd(false);
@@ -911,6 +912,12 @@ export const Sidebar = ({ isZoomed, isOpen, toggleSidebar }: SidebarProps) => {
               <li className={`flex items-center gap-x-2 cursor-pointer p-2 rounded-xl ${url === "/laporanrincianbelanja" ? "bg-white text-gray-800" : "hover:bg-slate-500"}`}>
                 <TbDeviceImacDollar className="text-xl" />
                 <span className={`${!isOpen && 'hidden'} origin-left duration-200`}>Rincian Belanja</span>
+              </li>
+            </Link>
+            <Link href="/laporantaggingpohon">
+              <li className={`flex items-center gap-x-2 cursor-pointer p-2 rounded-xl ${url === "/laporantaggingpohon" ? "bg-white text-gray-800" : "hover:bg-slate-500"}`}>
+                <TbCircleCheck className="text-xl" />
+                <span className={`${!isOpen && 'hidden'} origin-left duration-200`}>Tagging Pokin</span>
               </li>
             </Link>
             <Link href="/laporancascadingopd">
