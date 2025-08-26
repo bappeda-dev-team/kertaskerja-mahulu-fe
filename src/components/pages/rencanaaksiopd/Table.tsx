@@ -94,7 +94,7 @@ export const Table: React.FC<Table> = ({ kode_opd, tahun }) => {
     const token = getToken();
 
     useEffect(() => {
-        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_2;
+        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_RENAKSI_OPD;
         const fetchSasaran = async () => {
             setLoading(true);
             try {
@@ -241,7 +241,7 @@ export const RekinAsn: React.FC<RekinAsn> = ({ id, sasaran, indikator, tahun, to
     }
 
     const hapusRenaksiOpd = async (id: number) => {
-        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_2;
+        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_RENAKSI_OPD;
         // console.log(id);
         try {
             const response = await fetch(`${API_URL_2}/rencana-aksi-opd/delete/${id}`, {
@@ -262,7 +262,7 @@ export const RekinAsn: React.FC<RekinAsn> = ({ id, sasaran, indikator, tahun, to
         }
     };
     const syncRenaksiOpd = async (id: string) => {
-        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_2;
+        const API_URL_2 = process.env.NEXT_PUBLIC_API_URL_RENAKSI_OPD;
         // console.log(id);
         try {
             const response = await fetch(`${API_URL_2}/rencana-aksi-opd/sync_jadwal/${id}`, {

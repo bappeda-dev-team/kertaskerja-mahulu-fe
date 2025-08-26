@@ -593,20 +593,16 @@ export const FormEditPohon: React.FC<{
                 }
                 const { tagging } = data;
 
-                // 1. Cari setiap jenis tagging dan siapkan data fieldnya
-                const unggulanBupatiTag = tagging.find((t: Tagging) => t.nama_tagging === "Program Unggulan Bupati");
-                const hariKerjaTag = tagging.find((t: Tagging) => t.nama_tagging === "100 Hari Kerja Bupati");
-                const unggulanPusatTag = tagging.find((t: Tagging) => t.nama_tagging === "Program Unggulan Pemerintah Pusat");
+                const unggulanBupatiTag = tagging?.find((t: Tagging) => t.nama_tagging === "Program Unggulan Bupati");
+                const hariKerjaTag = tagging?.find((t: Tagging) => t.nama_tagging === "100 Hari Kerja Bupati");
+                const unggulanPusatTag = tagging?.find((t: Tagging) => t.nama_tagging === "Program Unggulan Pemerintah Pusat");
 
-                // 2. Siapkan objek default values untuk FIELD-FIELD INDIVIDUAL
                 const taggingFieldsDefaultValue = {
-                    // Kunci di sini harus sesuai dengan 'name' di Controller Anda
                     'tagging.0.keterangan_tagging': unggulanBupatiTag?.keterangan_tagging || '',
                     'tagging.1.keterangan_tagging': hariKerjaTag?.keterangan_tagging || '',
                     'tagging.2.keterangan_tagging': unggulanPusatTag?.keterangan_tagging || '',
                 };
 
-                // 3. Set State Boolean (tetap diperlukan agar input muncul)
                 setUnggulanBupati(!!unggulanBupatiTag);
                 setHariKerja(!!hariKerjaTag);
                 setUnggulanPusat(!!unggulanPusatTag);
