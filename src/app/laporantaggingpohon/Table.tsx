@@ -119,22 +119,10 @@ export const Table: React.FC<Table> = ({ tahun }) => {
                                 <th className="border-r border-b px-6 py-3 min-w-[200px]">Nama Pohon</th>
                                 <th className="border-r border-b px-6 py-3 min-w-[100px]">Level Pohon</th>
                                 <th className="border-r border-b px-6 py-3 min-w-[100px]">Perangkat Daerah</th>
-                                <th className="border-l border-b px-6 py-3 min-w-[200px]">Keterangan Tagging</th>
+                                <th className="border-l border-b px-6 py-3 min-w-[200px]">{DataTagging?.nama_tagging || "Tagging"}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td colSpan={5} className="border-r border-b bg-emerald-200 px-6 py-4">
-                                    <div className="font-semibold flex items-start justify-between gap-2">
-                                        {DataTagging?.nama_tagging || "-"}
-                                        {DataTagging?.pohon_kinerjas && DataTagging.pohon_kinerjas.length > 0 &&
-                                            <ButtonSky>
-                                                Cetak
-                                            </ButtonSky>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
                             {(DataTagging?.pohon_kinerjas?.length === 0 || DataTagging?.pohon_kinerjas === null) ?
                                 <tr>
                                     <td className="px-6 py-3 uppercase" colSpan={13}>
