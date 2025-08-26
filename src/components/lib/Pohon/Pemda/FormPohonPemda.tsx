@@ -134,32 +134,6 @@ export const FormPohonPemda: React.FC<{
             setIsLoading(false);
         }
     };
-    const fetchPelaksana = async () => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
-        setIsLoading(true);
-        try {
-            const response = await fetch(`${API_URL}/pegawai/findall`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error('cant fetch data opd');
-            }
-            const data = await response.json();
-            const opd = data.data.map((item: any) => ({
-                value: item.id,
-                label: item.nama_pegawai,
-            }));
-            setPelaksanaOption(opd);
-        } catch (err) {
-            console.log('gagal mendapatkan data opd');
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -325,6 +299,120 @@ export const FormPohonPemda: React.FC<{
                                         )}
                                     />
                                 </div>
+                                {/* TAGGING */}
+                                <label className="uppercase text-xs font-bold text-gray-700 my-2">
+                                    Tagging :
+                                </label>
+                                <div className="grid grid-flow-col gap-2 items-center border border-sky-700 rounded-lg p-3">
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanBupati ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanBupati((prev) => !prev)} className={`cursor-pointer ${UnggulanBupati && 'text-emerald-500'}`}>Program Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {HariKerja ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setHariKerja((prev) => !prev)} className={`cursor-pointer ${HariKerja && 'text-emerald-500'}`}>100 Hari Kerja Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanPusat ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanPusat((prev) => !prev)} className={`cursor-pointer ${UnggulanPusat && 'text-emerald-500'}`}>Program Pusat</p>
+                                    </div>
+                                </div>
+                                {UnggulanBupati &&
+                                    <Controller
+                                        name={`tagging.0.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {HariKerja &&
+                                    <Controller
+                                        name={`tagging.1.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan 100 Hari Kerja Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan 100 Hari Kerja Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {UnggulanPusat &&
+                                    <Controller
+                                        name={`tagging.2.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Pemerintah Pusat :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Pemerintah Pusat"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
                                 {(level === 3 || level === 4 || level === 5 || level === 6) &&
                                     <div className="flex flex-col py-3">
                                         <label
@@ -876,9 +964,9 @@ export const FormEditPohon: React.FC<{
     const [OpdOption, setOpdOption] = useState<OptionTypeString[]>([]);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [IsEdited, setIsEdited] = useState<boolean>(false);
-    const [DataEdit, setDataEdit] = useState<any>(null);
-    const [Deleted, setDeleted] = useState<boolean>(false);
+    const [UnggulanBupati, setUnggulanBupati] = useState<boolean>(false);
+    const [HariKerja, setHariKerja] = useState<boolean>(false);
+    const [UnggulanPusat, setUnggulanPusat] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const [ProsesDetail, setProsesDetail] = useState<boolean>(false);
     const token = getToken();
@@ -988,6 +1076,21 @@ export const FormEditPohon: React.FC<{
                     }
                     setKodeOpd(opd);
                 }
+                const { tagging } = data;
+
+                const unggulanBupatiTag = tagging?.find((t: Tagging) => t.nama_tagging === "Program Unggulan Bupati");
+                const hariKerjaTag = tagging?.find((t: Tagging) => t.nama_tagging === "100 Hari Kerja Bupati");
+                const unggulanPusatTag = tagging?.find((t: Tagging) => t.nama_tagging === "Program Unggulan Pemerintah Pusat");
+
+                const taggingFieldsDefaultValue = {
+                    'tagging.0.keterangan_tagging': unggulanBupatiTag?.keterangan_tagging || '',
+                    'tagging.1.keterangan_tagging': hariKerjaTag?.keterangan_tagging || '',
+                    'tagging.2.keterangan_tagging': unggulanPusatTag?.keterangan_tagging || '',
+                };
+
+                setUnggulanBupati(!!unggulanBupatiTag);
+                setHariKerja(!!hariKerjaTag);
+                setUnggulanPusat(!!unggulanPusatTag);
                 reset({
                     nama_pohon: data.nama_pohon || '',
                     keterangan: data.keterangan || '',
@@ -1003,6 +1106,7 @@ export const FormEditPohon: React.FC<{
                             satuan: t.satuan,
                         })),
                     })),
+                    ...taggingFieldsDefaultValue,
                 });
                 setPelaksana(
                     data.pelaksana?.map((item: any) => ({
@@ -1028,6 +1132,20 @@ export const FormEditPohon: React.FC<{
         const pelaksanaIds = Pelaksana?.map((pelaksana) => ({
             pegawai_id: pelaksana.value,
         })) || [];
+        const taggingData = [
+            ...(UnggulanBupati ? [{
+                nama_tagging: "Program Unggulan Bupati",
+                keterangan_tagging: data.tagging?.['0']?.keterangan_tagging || '',
+            }] : []),
+            ...(HariKerja ? [{
+                nama_tagging: "100 Hari Kerja Bupati",
+                keterangan_tagging: data.tagging?.['1']?.keterangan_tagging || '',
+            }] : []),
+            ...(UnggulanPusat ? [{
+                nama_tagging: "Program Unggulan Pemerintah Pusat",
+                keterangan_tagging: data.tagging?.['2']?.keterangan_tagging || '',
+            }] : []),
+        ];
         const formData = {
             //key : value
             ...(level === 1 && {
@@ -1061,6 +1179,7 @@ export const FormEditPohon: React.FC<{
                     })),
                 })),
             }),
+            tagging: taggingData,
         };
         // console.log(formData);
         try {
@@ -1131,58 +1250,6 @@ export const FormEditPohon: React.FC<{
                         onSubmit={handleSubmit(onSubmit)}
                         className='w-full'
                     >
-                        {/* {(level === 2 || level === 1) &&
-                            <div className="flex flex-col py-3">
-                                <label
-                                    className="uppercase text-xs font-bold text-gray-700 my-2"
-                                    htmlFor="penyebab_permasalahan"
-                                >
-                                    Penyebab Permasalahan (CSF)
-                                </label>
-                                <Controller
-                                    name="penyebab_permasalahan"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <input
-                                            {...field}
-                                            className="border px-4 py-2 rounded-lg"
-                                            id="penyebab_permasalahan"
-                                            type="text"
-                                            placeholder="masukkan faktor yang berpengaruh terhadap capaian outcome"
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </div>
-                        }
-                        {level === 1 &&
-                            <div className="flex flex-col py-3">
-                                <label
-                                    className="uppercase text-xs font-bold text-gray-700 my-2"
-                                    htmlFor="data_terukur"
-                                >
-                                    Data Terukur Terkait (CSF)
-                                </label>
-                                <Controller
-                                    name="data_terukur"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <input
-                                            {...field}
-                                            className="border px-4 py-2 rounded-lg"
-                                            id="data_terukur"
-                                            type="text"
-                                            placeholder="masukkan Data Terukur Terkait CSF"
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </div>
-                        } */}
                         <div className="flex flex-col py-3">
                             <label
                                 className="uppercase text-xs font-bold text-gray-700 my-2"
@@ -1230,6 +1297,124 @@ export const FormEditPohon: React.FC<{
                                 )}
                             />
                         </div>
+                        {/* TAGGING */}
+                        {level > 3 &&
+                            <>
+                                <label className="uppercase text-xs font-bold text-gray-700 my-2">
+                                    Tagging :
+                                </label>
+                                <div className="grid grid-flow-col gap-2 items-center border border-sky-700 rounded-lg p-3">
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanBupati ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanBupati(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanBupati((prev) => !prev)} className={`cursor-pointer ${UnggulanBupati && 'text-emerald-500'}`}>Program Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {HariKerja ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setHariKerja(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setHariKerja((prev) => !prev)} className={`cursor-pointer ${HariKerja && 'text-emerald-500'}`}>100 Hari Kerja Bupati</p>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        {UnggulanPusat ?
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(false)}
+                                                className="border w-[20px] h-[20px] bg-emerald-500 rounded-full text-white p-1 flex justify-center items-center"
+                                            >
+                                                <TbCheck />
+                                            </button>
+                                            :
+                                            <button
+                                                type="button"
+                                                onClick={() => setUnggulanPusat(true)}
+                                                className="w-[20px] h-[20px] border border-black rounded-full"
+                                            ></button>
+                                        }
+                                        <p onClick={() => setUnggulanPusat((prev) => !prev)} className={`cursor-pointer ${UnggulanPusat && 'text-emerald-500'}`}>Program Pusat</p>
+                                    </div>
+                                </div>
+                                {UnggulanBupati &&
+                                    <Controller
+                                        name={`tagging.0.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {HariKerja &&
+                                    <Controller
+                                        name={`tagging.1.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan 100 Hari Kerja Bupati :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan 100 Hari Kerja Bupati"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                                {UnggulanPusat &&
+                                    <Controller
+                                        name={`tagging.2.keterangan_tagging`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="flex flex-col py-3">
+                                                <label className="uppercase text-xs font-bold text-gray-700 mb-2">
+                                                    Keterangan Program Unggulan Pemerintah Pusat :
+                                                </label>
+                                                <input
+                                                    {...field}
+                                                    className="border px-4 py-2 rounded-lg"
+                                                    placeholder="Masukkan Keterangan Program Unggulan Pemerintah Pusat"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                }
+                            </>
+                        }
                         {(level == 4 || level == 5 || level == 6) &&
                             <div className="flex flex-col py-3">
                                 <label
