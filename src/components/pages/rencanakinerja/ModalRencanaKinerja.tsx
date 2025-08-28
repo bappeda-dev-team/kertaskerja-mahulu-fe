@@ -46,6 +46,11 @@ interface pohon {
     nama_opd: string;
     pelaksana: OptionTypeString[];
     indikator: indikator[];
+    tagging: Tagging[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 interface SasaranOpd {
     id: string;
@@ -169,7 +174,8 @@ export const ModalRencanaKinerja: React.FC<ModalProps> = ({ isOpen, onClose, id,
                             kode_opd: kode_opd,
                             nama_opd: '',
                             pelaksana: [],
-                            indikator: []
+                            indikator: [],
+                            tagging: []
                         }
                         setPokin(detail);
                         setDetailPokin(detail);
@@ -265,7 +271,8 @@ export const ModalRencanaKinerja: React.FC<ModalProps> = ({ isOpen, onClose, id,
                             kode_opd: kode_opd,
                             nama_opd: '',
                             pelaksana: [],
-                            indikator: []
+                            indikator: [],
+                            tagging: []
                         }
                         setPokin(detail);
                     }

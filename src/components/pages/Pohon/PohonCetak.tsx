@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TbCheck, TbCircleLetterXFilled, TbHourglass } from 'react-icons/tb';
+import { TbCheck, TbCircleLetterXFilled, TbHourglass, TbCircleCheckFilled } from 'react-icons/tb';
 import { getToken } from '@/components/lib/Cookie';
 import { TablePohonLaporan, Pagu, ProgramKegiatan } from '@/components/lib/Pohon/Cascading/PohonLaporan';
 
@@ -7,6 +7,10 @@ interface pohon {
     jenis: 'cascading' | 'non_cascading' | 'laporan';
     tema: any;
     closeTrigger: () => void;
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 
 export const PohonCetak: React.FC<pohon> = ({ jenis, tema, closeTrigger }) => {
@@ -57,8 +61,8 @@ export const PohonCetak: React.FC<pohon> = ({ jenis, tema, closeTrigger }) => {
                                         tipe="cetak"
                                     />
                                     <div className="mt-3">
-                                        <Pagu 
-                                            jenis={tema.jenis_pohon} 
+                                        <Pagu
+                                            jenis={tema.jenis_pohon}
                                             anggaran={tema.total_anggaran || tema.pagu_anggaran}
                                         />
                                     </div>
@@ -92,6 +96,7 @@ export const PohonCetak: React.FC<pohon> = ({ jenis, tema, closeTrigger }) => {
 export const TableCetakPohon = (props: any) => {
     const id = props.item.id;
     const nama_pohon = props.item.nama_pohon;
+    const tagging = props.item.tagging;
     const tema = props.item.tema;
     const keterangan = props.item.keterangan;
     const opd = props.item.perangkat_daerah?.nama_opd;
@@ -137,6 +142,18 @@ export const TableCetakPohon = (props: any) => {
 
     return (
         <div className='flex flex-col w-full'>
+            {/* TAGGING */}
+            {tagging &&
+                tagging.map((tg: Tagging, tag_index: number) => (
+                    <div key={tag_index} className="flex flex-col gap-1 w-full px-3 py-1 border border-yellow-400 rounded-lg bg-white mb-2">
+                        <div className='grid grid-flow-col justify-start items-center gap-1'>
+                            <h1 className='text-emerald-500'><TbCircleCheckFilled /></h1>
+                            <h1 className='font-semibold'>{tg.nama_tagging || "-"}</h1>
+                        </div>
+                        <h1 className="p-1 text-slate-600 text-start">{tg.keterangan_tagging || ""}</h1>
+                    </div>
+                ))
+            }
             <table className='w-full'>
                 <tbody>
                     <tr>

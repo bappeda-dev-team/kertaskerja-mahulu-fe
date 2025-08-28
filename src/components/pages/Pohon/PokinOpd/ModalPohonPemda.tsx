@@ -38,6 +38,11 @@ interface TypePohonPemda {
     nama_opd: string;
     pelaksana?: OptionTypeString[];
     indikator: indikator[];
+    tagging: Tagging[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 interface TypePohonCross {
     value: number;
@@ -1124,6 +1129,7 @@ export const TableDetailPohonPemda = (props: any) => {
     const tema = props?.item?.[0]?.tema;
     const jenis = props?.item?.[0]?.jenis_pohon;
     const childs = props?.item?.[0]?.childs;
+    const tagging = props?.item?.[0]?.tagging;
 
     return (
         <>
@@ -1160,7 +1166,19 @@ export const TableDetailPohonPemda = (props: any) => {
                         }
                     </div>
                     {/* BODY */}
-                    <div className="flex justify-center m-3">
+                    <div className="flex flex-col w-full justify-center m-3">
+                        {/* TAGGING */}
+                        {tagging &&
+                            tagging.map((tg: Tagging, tag_index: number) => (
+                                <div key={tag_index} className="flex flex-col gap-1 w-full px-3 py-1 border border-yellow-400 rounded-lg bg-white mb-2">
+                                    <div className='flex items-center gap-1'>
+                                        <h1 className='text-emerald-500'><TbCircleCheckFilled /></h1>
+                                        <h1 className='font-semibold'>{tg.nama_tagging || "-"}</h1>
+                                    </div>
+                                    <h1 className="p-1 text-slate-600 text-start">{tg.keterangan_tagging || ""}</h1>
+                                </div>
+                            ))
+                        }
                         <table className='w-full'>
                             <tbody>
                                 <tr>

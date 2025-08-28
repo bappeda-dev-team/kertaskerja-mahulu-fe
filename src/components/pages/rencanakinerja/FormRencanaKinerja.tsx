@@ -34,6 +34,11 @@ interface pohon {
     nama_opd: string;
     pelaksana: OptionTypeString[];
     indikator: indikator[];
+    tagging: Tagging[];
+}
+interface Tagging {
+    nama_tagging: string;
+    keterangan_tagging: string;
 }
 interface FormValue {
     id_pohon: OptionType;
